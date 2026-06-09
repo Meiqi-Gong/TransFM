@@ -92,14 +92,15 @@ Several paths in the research code are currently hard-coded and must be changed 
    ```python
    ckpt_path = "/path/to/depthfm-v1.ckpt"
    ```
-   Use ```bash
-mkdir -p pretrained/depthfm
+   Use
+   ```bash
+    mkdir -p pretrained/depthfm
+    
+    wget https://ommer-lab.com/files/depthfm/depthfm-v1.ckpt \
+      -O pretrained/depthfm/depthfm-v1.ckpt
+    ```
 
-wget https://ommer-lab.com/files/depthfm/depthfm-v1.ckpt \
-  -O pretrained/depthfm/depthfm-v1.ckpt
-```
-
-3. Test checkpoint and data paths
+4. Test checkpoint and data paths
 
    Used by `test.py`:
 
@@ -110,7 +111,7 @@ wget https://ommer-lab.com/files/depthfm/depthfm-v1.ckpt \
    root_b = Path("/path/to/M3FD/test/Ir")
    ```
 
-4. Output directory
+5. Output directory
 
    `test.py` writes translated images to `outputs_tmp/`. Create this folder before running inference:
 
