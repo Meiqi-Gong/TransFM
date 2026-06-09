@@ -38,24 +38,6 @@ TransFM/
 +-- test.py                  # Standalone inference/evaluation script
 ```
 
-## Environment
-
-The code is intended for a CUDA-enabled PyTorch environment.
-
-```bash
-conda create -n transfm python=3.8 -y
-conda activate transfm
-
-# Install the PyTorch build that matches your CUDA version.
-pip install torch torchvision
-
-pip install diffusers transformers accelerate
-pip install einops torchdiffeq PyYAML tqdm wandb tensorboard
-pip install opencv-python scikit-image pillow numpy natsort PyWavelets
-```
-
-If you use a specific CUDA version, install PyTorch from the official PyTorch command selector instead of the generic command above.
-
 ## Data Preparation
 
 The default configuration expects paired visible and infrared images in PNG format. The training dataset reads visible and infrared images from two folders and sorts them by filename, so corresponding pairs should share the same ordering and preferably the same filename.
@@ -110,6 +92,12 @@ Several paths in the research code are currently hard-coded and must be changed 
    ```python
    ckpt_path = "/path/to/depthfm-v1.ckpt"
    ```
+   Use ```bash
+mkdir -p pretrained/depthfm
+
+wget https://ommer-lab.com/files/depthfm/depthfm-v1.ckpt \
+  -O pretrained/depthfm/depthfm-v1.ckpt
+```
 
 3. Test checkpoint and data paths
 
