@@ -1,0 +1,149 @@
+name: FlowMatching_VideoFusion
+model_type: VideoFusionModel
+num_gpu: 1
+scale: 1
+root_path: /home/whu/HDD_16T/timer/gmq/video/ours
+path:
+  pretrain_network_g:
+  strict_load_g: true
+  resume_state: ~
+
+logger:
+  print_freq: 50
+  save_checkpoint_freq: 1000
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+datasets:
+  train:
+    name: M3FD
+    type: VideoFusionDataset
+    dataroot_gt_vi: /home/whu/HDD_16T/timer/gmq/video/FMFusion_depthfm/M3FD/train/Vis
+    dataroot_gt_ir: /home/whu/HDD_16T/timer/gmq/video/FMFusion_depthfm/M3FD/train/Ir
+    test_mode: False
+    io_backend:
+      type: disk
+
+    num_frame: 12
+    gt_size: 256
+    interval_list: [1]
+    random_reverse: false
+    use_flip: true
+    use_rot: true
+
+    # data loader
+    use_shuffle: true
+    num_worker_per_gpu: 4
+    batch_size_per_gpu: 3
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+
+  test:
+    name: M3FD
+    type: VideoFusionTestDataset
+
+    dataroot_gt_vi: /home/whu/HDD_16T/timer/gmq/video/FMFusion_depthfm/M3FD/test/Vis
+    dataroot_gt_ir: /home/whu/HDD_16T/timer/gmq/video/FMFusion_depthfm/M3FD/test/Ir
+
+    test_mode: True
+
+    cache_data: false
+    io_backend:
+      type: disk
+
+    num_frame: 30
+    num_overlap: 5
+    gt_size: 64
+
+data:
+  data_root: # path to the dataset folder
+  input_size: 64
+  crop_size: 64
+  frames_per_sample: 40
+  skip_frames: 0
+  random_horizontal_flip: False
+  aug: False
+  albumentations: True
+model:
+  # Defines the sigma min
+  sigma: 0.0000001
+  t_steps: 2
+  noising_step: 400
+
+  # Parameters for vector field regressor
+  vector_field_regressor:
+    state_size: 4
+    state_res: [32, 32]
+    inner_dim: 768
+    depth: 4
+    mid_depth: 5
+    out_norm: "ln"
+
+  # Parameters for the autoencoder
+  autoencoder:
+    # The architecture of the autoencoder [ours, ldm-vq, ldm-kl]
+    type: "ldm-vq"
+    config: "f8_small"
+    ckpt_path: # path to the checkpoint
+
+training:
+  # Total number of epochs to train the model for
+  num_epochs: 100000
+  t_steps: 2
+
+  # Parameters for batch building
+  batching:
+    batch_size: 4
+    num_workers: 2
+
+  # Parameters for the optimizer
+  optimizer:
+    learning_rate: 0.00005 #0.0001
+    weight_decay: 0.000005 #0.000005
+
+    num_warmup_steps: 5000
+    num_training_steps: 1000000
+
+  # Number of observations in the sequence
+  num_observations: 40
+  # Number of frames to use as initial conditioning
+  condition_frames: 10
+  # Nuber of frames to generate
+  frames_to_generate: 30
+
+  # Parameters for loss weighting
+  loss_weights:
+    flow_matching_loss: 5.0
+
+evaluation:
+  # Parameters for batch building
+  t_steps: 2
+  batching:
+    batch_size: 4
+    num_workers: 7
+
+  # Number of observations in the sequence
+  num_observations: 40
+  # Number of frames to use as initial conditioning
+  condition_frames: 10
+  # Nuber of frames to generate
+  frames_to_generate: 30
+
+val:
+  val_freq: 1000
+  flip_seq: false
+  save_img: true
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: true
+
+network_g:
+  type: VideoFusion
+  in_channels: 3
+  num_features: 64
+  out_channels: 3
