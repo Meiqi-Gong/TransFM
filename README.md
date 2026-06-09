@@ -92,7 +92,7 @@ Several paths in the research code are currently hard-coded and must be changed 
    ```python
    ckpt_path = "/path/to/depthfm-v1.ckpt"
    ```
-   Use
+   Download the depthfm-v1.ckpt please follow:
    ```bash
     mkdir -p pretrained/depthfm
     
