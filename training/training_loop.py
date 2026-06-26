@@ -75,7 +75,6 @@ def training_loop(
         generator=torch.Generator().manual_seed(random_seed * num_gpus + rank))
     
     try:
-        # 你的训练代码，比如
         trainer = Trainer(rank=rank,
         run_name=extended_run_name,
         config=config["training"],
@@ -117,13 +116,5 @@ def training_loop(
         traceback.print_exc()
         raise e
     
-    # trainer = Trainer(
-    #     rank=rank,
-    #     run_name=extended_run_name,
-    #     config=config["training"],
-    #     dataset=datasets["train"],
-    #     sampler=sampler,
-    #     num_gpus=num_gpus,
-    #     device=device)
 
     
