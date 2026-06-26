@@ -29,31 +29,6 @@ class Model(nn.Module):
         # ckpt['ldm_hparams']['in_channels'] = 4
         self.vector_field_regressor = VectorFieldRegressor(**ckpt['ldm_hparams'])
         
-        # self.vector_field_regressor.load_state_dict(ckpt['state_dict'], strict=False)
-        
-        # state_dict = ckpt['state_dict']
-        # model_dict = self.vector_field_regressor.state_dict()
-        # matched_dict = {}
-        # for k, v in state_dict.items():
-        #     if k in model_dict and v.shape == model_dict[k].shape:
-        #         matched_dict[k] = v
-        #     else:
-        #         print(f"Skipping: {k} | ckpt: {v.shape} vs model: {model_dict[k].shape if k in model_dict else 'missing'}")
-        # model_dict.update(matched_dict)
-        # self.vector_field_regressor.load_state_dict(model_dict)
-        
-        # self.vector_field_regressor.load_state_dict(ckpt['state_dict'], strict=False)
-        # stable_state = torch.load("/home/whu/HDD_16T/timer/gmq/MultiModal/stable-diffusion-v1-5/v1-5-pruned.ckpt", map_location="cpu")
-        
-        # stable_state = torch.load("/home/whu/HDD_16T/timer/gmq/MultiModal/stable-diffusion-2-1/sd-v2-1.ckpt", map_location="cpu")
-        # state = {k.replace("model.diffusion_model.", ""): v for k, v in stable_state['state_dict'].items()}  
-        # self.vector_field_regressor.load_state_dict(state, strict=False)
-        
-        # self.empty_text_embed = ckpt['empty_text_embedding']
-        # empty_text_embed_tensor = torch.from_numpy(self.empty_text_embed)
-        # torch.save(empty_text_embed_tensor, "empty_embedding.pt")
-        # self.refinement_model = Restormer_fn()
-        # self.empty_text_embed = torch.load("empty_embedding.pt")
     
     
     def q_sample(self, x_start: torch.Tensor, t: int, noise: torch.Tensor = None, n_diffusion_timesteps: int = 1000):
@@ -120,13 +95,6 @@ class Model(nn.Module):
             timestamps=t.squeeze(3).squeeze(2).squeeze(1),
             context_ca = context_ca)
         x_recon = reconstructed_vectors * (1 - (1 - sigma) * t) + (1 - sigma) * x_t
-        # x_recon = self.reconstruct_x1(observations, conditioning_latents, context_ca, 2)
-        
-        # denoise_x0 = x_recon
-        # x_recon = self.refinement_model(
-        #     input_latents=denoise_x0,
-        #     conditioning_latents=torch.cat([observations, conditioning_latents[0]], 1),
-        #     timestamps=t.squeeze(3).squeeze(2).squeeze(1))
 
         return DictWrapper(
             # Inputs
