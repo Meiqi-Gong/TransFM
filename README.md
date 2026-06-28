@@ -110,6 +110,7 @@ Several paths in the research code are currently hard-coded and must be changed 
    base_dir = Path("/path/to/M3FD/test/Vis")
    root_b = Path("/path/to/M3FD/test/Ir")
    ```
+   Download our pretrained weights at: https://modelscope.cn/models/MeiqiGong/TransFM-Pretrained-Weights/files. 
 
 5. Output directory
 
